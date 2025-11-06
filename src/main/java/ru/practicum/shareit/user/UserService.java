@@ -74,7 +74,7 @@ public class UserService {
             throw new ValidationException(error);
         }
         Optional<User> alreadyExistUser = userRepository.findByEmail(user.getEmail());
-        if (alreadyExistUser.isPresent() && alreadyExistUser.get().getId() != user.getId()) {
+        if (alreadyExistUser.isPresent() && !alreadyExistUser.get().getId().equals(user.getId())) {
             error = "Уже существует пользователь с указанным имейлом";
             throw new DuplicatedDataException(error);
         }
