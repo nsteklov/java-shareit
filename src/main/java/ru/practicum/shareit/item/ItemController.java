@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.HttpHeaders;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.Collection;
@@ -15,12 +16,12 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto create(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ItemDto create(@RequestBody ItemDto itemDto, @RequestHeader(HttpHeaders.X_SHARER_USER_ID) Long userId) {
         return itemService.create(itemDto, userId);
     }
 
     @PatchMapping("/{id}")
-    public ItemDto update(@RequestBody ItemDto itemDto, @PathVariable Long id, @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ItemDto update(@RequestBody ItemDto itemDto, @PathVariable Long id, @RequestHeader(HttpHeaders.X_SHARER_USER_ID) Long userId) {
         return itemService.update(itemDto, id, userId);
     }
 
@@ -30,7 +31,7 @@ public class ItemController {
     }
 
     @GetMapping()
-    public Collection<ItemDto> findByUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public Collection<ItemDto> findByUser(@RequestHeader(HttpHeaders.X_SHARER_USER_ID) Long userId) {
         return itemService.findByUser(userId);
     }
 
