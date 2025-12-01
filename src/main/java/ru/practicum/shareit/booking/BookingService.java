@@ -7,7 +7,7 @@ import java.util.List;
 public interface BookingService {
     BookingDto create(SaveBookingRequest saveBookingRequest, Long bookerId);
 
-    BookingDto approve(Long bookingId, boolean Approved, Long userId);
+    BookingDto approve(Long bookingId, boolean approved, Long userId);
 
     BookingDto findById(Long bookingId, Long userId);
 

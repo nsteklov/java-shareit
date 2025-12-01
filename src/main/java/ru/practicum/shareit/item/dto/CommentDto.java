@@ -3,8 +3,6 @@ package ru.practicum.shareit.item.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
 
