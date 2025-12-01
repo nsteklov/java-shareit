@@ -58,14 +58,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto approve(Long bookingId, boolean Approved, Long userId) {
+    public BookingDto approve(Long bookingId, boolean approved, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
         if (!booking.getItem().getOwner().getId().equals(userId)) {
             error = "Статус бронирования может изменять только владелец вещи";
             throw new ValidationException(error);
         }
-        if (Approved) {
+        if (approved) {
             booking.setStatus(Status.APPROVED);
         } else {
             booking.setStatus(Status.REJECTED);
