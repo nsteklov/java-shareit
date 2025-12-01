@@ -239,24 +239,24 @@ class ShareItTests {
     @Test
     public void findBookingById() {
         User newUser = new User();
-        newUser.setName("vasya2");
-        newUser.setEmail("vasya2@vasya.ru");
+        newUser.setName("vasya4");
+        newUser.setEmail("vasya4@vasya.ru");
         User savedUser = userRepository.save(newUser);
 
         User newUser2 = new User();
-        newUser2.setName("vasya3");
-        newUser2.setEmail("vasya3@vasya.ru");
+        newUser2.setName("vasya5");
+        newUser2.setEmail("vasya5@vasya.ru");
         User savedUser2 = userRepository.save(newUser2);
 
         Item newItem = new Item();
-        newItem.setName("test2");
-        newItem.setDescription("test2 description");
+        newItem.setName("test3");
+        newItem.setDescription("test3 description");
         newItem.setAvailable(true);
         newItem.setOwner(savedUser2);
         Item savedItem = itemRepository.save(newItem);
         Booking newBooking = new Booking();
-        newBooking.setStart(LocalDateTime.of(2026, 01, 01, 00, 00, 00));
         newBooking.setStart(LocalDateTime.of(2027, 01, 01, 00, 00, 00));
+        newBooking.setStart(LocalDateTime.of(2028, 01, 01, 00, 00, 00));
         newBooking.setItem(savedItem);
         newBooking.setBooker(savedUser);
         Booking savedBooking = bookingRepository.save(newBooking);
