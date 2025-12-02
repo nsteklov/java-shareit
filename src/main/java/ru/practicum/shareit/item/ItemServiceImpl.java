@@ -161,7 +161,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId).get();
         List<Booking> bookings = bookingRepository.findByItemId(itemId).stream()
                 .filter(booking -> booking.getBooker().getId().equals(userId)
-                && booking.getStatus().equals(Status.APPROVED))
+                && booking.getStatus().equals(Status.APPROVED)
+                && booking.getEnd().isBefore(LocalDateTime.now()))
                 .collect(Collectors.toList());
         if (bookings.isEmpty()) {
             throw new ValidationException("Пользователь с id = " + userId + " не брал в аренду вещь с id " + itemId);
