@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -160,7 +161,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId).get();
         List<Booking> bookings = bookingRepository.findByItemId(itemId).stream()
                 .filter(booking -> booking.getBooker().getId().equals(userId)
-                        && booking.getEnd().isBefore(LocalDateTime.now()))
+                && booking.getStatus().equals(Status.APPROVED))
                 .collect(Collectors.toList());
         if (bookings.isEmpty()) {
             throw new ValidationException("Пользователь с id = " + userId + " не брал в аренду вещь с id " + itemId);
