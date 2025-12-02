@@ -2,9 +2,10 @@ package ru.practicum.shareit.item;
 
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.HttpHeaders;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/items")
@@ -31,12 +32,17 @@ public class ItemController {
     }
 
     @GetMapping()
-    public Collection<ItemDto> findByUser(@RequestHeader(HttpHeaders.X_SHARER_USER_ID) Long userId) {
-        return itemService.findByUser(userId);
+    public List<ItemDto> findByUser(@RequestHeader(HttpHeaders.X_SHARER_USER_ID) Long userId) {
+        return itemService.findByOwnerId(userId);
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> searchAvailable(@RequestParam(required = false) String text) {
+    public List<ItemDto> searchAvailable(@RequestParam(required = false) String text) {
         return itemService.searchAvailable(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto create(@RequestBody CommentDto commentDto, @PathVariable Long itemId, @RequestHeader(HttpHeaders.X_SHARER_USER_ID) Long userId) {
+        return itemService.addComment(commentDto, itemId, userId);
     }
 }

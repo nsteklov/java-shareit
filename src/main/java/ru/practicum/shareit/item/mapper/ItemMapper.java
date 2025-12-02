@@ -2,20 +2,38 @@ package ru.practicum.shareit.item.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithoutComments;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
 
-    public static ItemDto toItemDto(Item item) {
+    public static ItemDto toItemDto(Item item, LocalDateTime lastBooking,  LocalDateTime nextBooking, List<CommentDto> comments) {
         return new ItemDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
                 item.isAvailable(),
-                item.getRequest() != null ? item.getRequest().getId() : null
+                item.getRequestId() != null ? item.getRequestId() : null,
+                lastBooking,
+                nextBooking,
+                comments
+        );
+    }
+
+    public static ItemDtoWithoutComments toItemDtoWithoutComments(Item item) {
+        return new ItemDtoWithoutComments(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.isAvailable(),
+                item.getRequestId() != null ? item.getRequestId() : null
         );
     }
 
