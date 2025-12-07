@@ -47,7 +47,7 @@ public class UserService {
             user.setEmail(oldUser.getEmail());
         }
         validate(user);
-        User updatedUser = userRepository.update(user);
+        User updatedUser = userRepository.save(user);
         return UserMapper.toUserDto(updatedUser);
     }
 
@@ -73,7 +73,7 @@ public class UserService {
             error = "Электронная почта не может быть пустой и должна содержать символ @";
             throw new ValidationException(error);
         }
-        Optional<User> alreadyExistUser = userRepository.findByEmail(user.getEmail());
+        Optional<User> alreadyExistUser = userRepository.findByEmailContainingIgnoreCase(user.getEmail());
         if (alreadyExistUser.isPresent() && !alreadyExistUser.get().getId().equals(user.getId())) {
             error = "Уже существует пользователь с указанным имейлом";
             throw new DuplicatedDataException(error);
