@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestService;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -42,9 +45,7 @@ class ItemRequestServiceImplTest {
     void findByRequestorId() {
 
         UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");
-        UserDto userDto2 = makeUserDto(null, "petya1", "petya1@mail.ru");
         User user1 = UserMapper.toUser(userDto1);
-
         User savedUser1  = userRepository.save(user1);
 
         SaveItemRequest itemRequestDto1 = makeItemRequestDto("запрос 1");
@@ -91,31 +92,78 @@ class ItemRequestServiceImplTest {
         assertThat(itemRequest.getDescription(), equalTo(itemRequestDto1.getDescription()));
     }
 
-//    @Test
-//    void findByIdAndOwnerId() {
-//
-//        UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");
-//        User user1 = UserMapper.toUser(userDto1);
-//        User savedUser1  = userRepository.save(user1);
-//        SaveItemRequest itemRequestDto = makeItemRequestDto("запрос 1");
-//
-//        ItemRequestDto createdItemRequestDto = service.create(itemRequestDto, savedUser1.getId());
-//
-//        String queryText = "select ir " +
-//                "from ItemRequest ir " +
-//                "left join Item i " +
-//                "on ir.id = i.requestId " +
-//                "where ir.id  = :id " +
-//                " and i.owner.id  = :ownerId " +
-//                "order by ir.created desc";
-//
-//        TypedQuery<ItemRequest> query = em.createQuery(queryText, ItemRequest.class);
-//        ItemRequest itemRequest = query.setParameter("id", createdItemRequestDto.getId())
-//                .setParameter("ownerId", savedUser1.getId())
-//                .getSingleResult();
-//
-//        assertThat(itemRequest.getDescription(), equalTo(createdItemRequestDto.getDescription()));
-//    }
+    @Test
+    void findByIdAndOwnerId() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1  = userRepository.save(user1);
+        UserDto userDto2 = makeUserDto(null, "vasya2", "vasy2@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2  = userRepository.save(user2);
+
+        SaveItemRequest itemRequestDto = makeItemRequestDto("запрос 1");
+        ItemRequestDto createdItemRequestDto = service.create(itemRequestDto, savedUser1.getId());
+
+        ItemDto itemDto = makeItemDto(null, "патефон1", "крутой патефон",true, createdItemRequestDto.getId());
+        Item item = ItemMapper.toItem(itemDto, savedUser2);
+        Item savedItem = itemRepository.save(item);
+
+        String queryText = "select ir " +
+                "from ItemRequest ir " +
+                "left join Item i " +
+                "on ir.id = i.requestId " +
+                "where ir.id  = :id " +
+                " and i.owner.id  = :ownerId " +
+                "order by ir.created desc";
+
+        TypedQuery<ItemRequest> query = em.createQuery(queryText, ItemRequest.class);
+        ItemRequest itemRequest = query.setParameter("id", createdItemRequestDto.getId())
+                .setParameter("ownerId", savedUser2.getId())
+                .getSingleResult();
+
+        assertThat(itemRequest.getDescription(), equalTo(createdItemRequestDto.getDescription()));
+    }
+
+    @Test
+    void findAll() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1  = userRepository.save(user1);
+
+        UserDto userDto2 = makeUserDto(null, "vasya2", "vasy2@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2  = userRepository.save(user2);
+
+        SaveItemRequest itemRequestDto1 = makeItemRequestDto("запрос 1");
+        SaveItemRequest itemRequestDto2 = makeItemRequestDto("запрос 2");
+        SaveItemRequest itemRequestDto3 = makeItemRequestDto("запрос 3");
+
+        List<SaveItemRequest> sourceRequests = List.of(
+                itemRequestDto1,
+                itemRequestDto2);
+
+        ItemRequest entity1 = ItemRequestMapper.toRequest(itemRequestDto1, savedUser1);
+        em.persist(entity1);
+
+        ItemRequest entity2 = ItemRequestMapper.toRequest(itemRequestDto2, savedUser1);
+        em.persist(entity2);
+
+        ItemRequest entity3 = ItemRequestMapper.toRequest(itemRequestDto3, savedUser2);
+        em.persist(entity3);
+
+        em.flush();
+
+        Collection<ItemRequestDto> targetRequests = service.findAll(savedUser2.getId());
+
+        assertThat(targetRequests, hasSize(sourceRequests.size()));
+        for (SaveItemRequest saveItemRequest : sourceRequests) {
+            assertThat(targetRequests, hasItem(allOf(
+                    hasProperty("description", equalTo(saveItemRequest.getDescription()))
+            )));
+        }
+    }
 
     private SaveItemRequest makeItemRequestDto(String description) {
         SaveItemRequest dto = new SaveItemRequest();
@@ -129,6 +177,17 @@ class ItemRequestServiceImplTest {
         dto.setId(id);
         dto.setName(name);
         dto.setEmail(email);
+
+        return dto;
+    }
+
+    private ItemDto makeItemDto(Long id, String name, String description, Boolean available, Long requestId) {
+        ItemDto dto = new ItemDto();
+        dto.setId(id);
+        dto.setName(name);
+        dto.setDescription(description);
+        dto.setAvailable(available);
+        dto.setRequestId(requestId);
 
         return dto;
     }
