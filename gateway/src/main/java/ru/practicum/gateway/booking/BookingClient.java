@@ -7,15 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-//import ru.practicum.gateway.booking.dto.BookingDto;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.gateway.HttpHeaders;
-import ru.practicum.gateway.booking.dto.BookingDto;
 import ru.practicum.gateway.booking.dto.SaveBookingRequest;
 import ru.practicum.gateway.client.BaseClient;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Service

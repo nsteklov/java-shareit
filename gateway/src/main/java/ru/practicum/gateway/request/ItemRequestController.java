@@ -5,10 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.gateway.HttpHeaders;
 import ru.practicum.gateway.exception.ValidationException;
-import ru.practicum.gateway.request.dto.ItemRequestDto;
 import ru.practicum.gateway.request.dto.SaveItemRequest;
-
-import java.util.List;
 
 @RequestMapping(path = "/requests")
 @RestController

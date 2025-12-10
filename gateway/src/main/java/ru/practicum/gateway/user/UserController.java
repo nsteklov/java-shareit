@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.gateway.exception.ValidationException;
 import ru.practicum.gateway.user.dto.UserDto;
 
-import java.util.Optional;
-
 @RequestMapping(path = "/users")
 @RestController
 @RequiredArgsConstructor

@@ -84,22 +84,15 @@ public class BaseClient {
     private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, @Nullable Long userId, @Nullable Map<String, Object> parameters, @Nullable T body) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders(userId));
         ResponseEntity<Object> shareitServerResponse;
-        System.out.println(parameters);
-        System.out.println(path);
-        System.out.println(requestEntity);
         try {
             if (parameters != null) {
-                System.out.println(parameters);
                 shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
             } else {
-                System.out.println(method);
-                System.out.println(requestEntity);
                 shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class);
             }
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
         } catch (RestClientException e) {
-            System.out.println(e);
             return null;
         }
         return prepareGatewayResponse(shareitServerResponse);

@@ -1,24 +1,12 @@
 package ru.practicum.gateway.booking;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.client.RestTemplate;
-import ru.practicum.gateway.booking.dto.BookingDto;
 import ru.practicum.gateway.booking.dto.SaveBookingRequest;
-import ru.practicum.gateway.client.BaseClient;
 import ru.practicum.gateway.HttpHeaders;
 import ru.practicum.gateway.exception.ValidationException;
-
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RequestMapping(path = "/bookings")
 @RestController

@@ -12,7 +12,6 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.notNullValue;

@@ -1,11 +1,9 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.HttpHeaders;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoWithoutComments;
 
 import java.util.List;
 

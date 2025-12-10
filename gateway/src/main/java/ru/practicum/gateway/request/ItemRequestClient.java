@@ -6,11 +6,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.gateway.HttpHeaders;
 import ru.practicum.gateway.client.BaseClient;
-import ru.practicum.gateway.item.dto.CommentDto;
 import ru.practicum.gateway.request.dto.SaveItemRequest;
 
 import java.util.Map;
