@@ -8,7 +8,6 @@ import ru.practicum.shareit.error.ErrorResponse;
 import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.user.UserController;
 
 public class ErrorHandlerTest {
 
@@ -16,7 +15,6 @@ public class ErrorHandlerTest {
         ErrorHandler errorHandler = new ErrorHandler();
         errorHandler.printMessage();
     }
-    @ExceptionHandler
 
     @Test
     public void handleNotFoundException() {
