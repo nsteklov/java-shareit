@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.SaveBookingRequest;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.exception.DuplicatedDataException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -27,6 +29,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 @SpringBootTest(
@@ -117,6 +120,27 @@ class BookingServiceImplTest {
         assertThat(booking.getStart(), equalTo(saveBookingRequest1.getStart()));
         assertThat(booking.getEnd(), equalTo(saveBookingRequest1.getEnd()));
         assertThat(booking.getItem().getId(), equalTo(saveBookingRequest1.getItemId()));
+    }
+
+    @Test
+    void approveByNotOwner() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya32", "vasya32@mail.ru");
+        UserDto userDto2 = makeUserDto(null, "petya44", "petya44@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User user2 = UserMapper.toUser(userDto2);
+
+        User savedUser1 = userRepository.save(user1);
+        User savedUser2 = userRepository.save(user2);
+
+        ItemDto itemDto1 = makeItemDto(null, "патефон11", "крутой патефон",true);
+        Item item1 = ItemMapper.toItem(itemDto1, savedUser1);
+
+        Item savedItem1 = itemRepository.save(item1);
+
+        SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), savedItem1.getId());
+        BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
+        assertThrows(ValidationException.class, () -> bookingService.approve(bookingDto.getId(), true, savedUser2.getId()));
     }
 
     @Test
