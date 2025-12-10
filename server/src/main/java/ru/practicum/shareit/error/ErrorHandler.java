@@ -11,6 +11,10 @@ import ru.practicum.shareit.exception.ValidationException;
 @RestControllerAdvice
 public class ErrorHandler {
 
+    public void printMessage() {
+        System.out.println("error");
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(final NotFoundException e) {
