@@ -28,5 +28,5 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
             "where ir.id = ?1 " +
             " and i.owner.id = ?2 " +
             "order by ir.created desc")
-    Optional<ItemRequest> findByIdAndOwnerId(Long id, Long OwnerId);
+    Optional<ItemRequest> findByIdAndOwnerId(Long id, Long ownerId);
 }

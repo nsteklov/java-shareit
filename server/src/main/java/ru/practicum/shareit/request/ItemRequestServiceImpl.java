@@ -74,7 +74,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         if (!userRepository.existsById(ownerId)) {
             throw new NotFoundException("Пользователь с id = " + id + " не найден");
         }
-        Optional <ItemRequest> optItemRequest = itemRequestRepository.findByIdAndOwnerId(id, ownerId);
+        Optional<ItemRequest> optItemRequest = itemRequestRepository.findByIdAndOwnerId(id, ownerId);
         ItemRequest itemRequest = null;
         if (optItemRequest.isPresent()) {
             itemRequest = optItemRequest.get();

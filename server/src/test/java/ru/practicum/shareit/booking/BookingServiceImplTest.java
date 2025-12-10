@@ -63,7 +63,7 @@ class BookingServiceImplTest {
         SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), savedItem1.getId());
         SaveBookingRequest saveBookingRequest2 = makeSaveBookingRequest(LocalDateTime.of(2027, 12, 31, 13, 45, 10), LocalDateTime.of(2029, 12, 31, 13, 45, 10), savedItem2.getId());
 
-        List <SaveBookingRequest> sourceBookings = List.of(
+        List<SaveBookingRequest> sourceBookings = List.of(
                 saveBookingRequest1,
                 saveBookingRequest2);
 
@@ -81,7 +81,7 @@ class BookingServiceImplTest {
 
         assertThat(targetBookings, hasSize(sourceBookings.size()));
         for (SaveBookingRequest sourceBooking : sourceBookings) {
-            assertThat(targetBookings, hasItem( allOf(
+            assertThat(targetBookings, hasItem(allOf(
                     hasProperty("id", notNullValue()),
                     hasProperty("start", equalTo(sourceBooking.getStart())),
                     hasProperty("end", equalTo(sourceBooking.getEnd()))
@@ -140,7 +140,7 @@ class BookingServiceImplTest {
         SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), savedItem1.getId());
         SaveBookingRequest saveBookingRequest2 = makeSaveBookingRequest(LocalDateTime.of(2027, 12, 31, 13, 45, 10), LocalDateTime.of(2029, 12, 31, 13, 45, 10), savedItem2.getId());
 
-        List <SaveBookingRequest> sourceBookings = List.of(
+        List<SaveBookingRequest> sourceBookings = List.of(
                 saveBookingRequest1,
                 saveBookingRequest2);
 
@@ -158,7 +158,7 @@ class BookingServiceImplTest {
 
         assertThat(targetBookings, hasSize(sourceBookings.size()));
         for (SaveBookingRequest sourceBooking : sourceBookings) {
-            assertThat(targetBookings, hasItem( allOf(
+            assertThat(targetBookings, hasItem(allOf(
                     hasProperty("id", notNullValue()),
                     hasProperty("start", equalTo(sourceBooking.getStart())),
                     hasProperty("end", equalTo(sourceBooking.getEnd()))

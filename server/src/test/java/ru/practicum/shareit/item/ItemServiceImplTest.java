@@ -45,7 +45,7 @@ class ItemServiceImplTest {
         ItemDto itemDto1 = makeItemDto(null, "патефон1", "крутой патефон",true);
         ItemDto itemDto2 = makeItemDto(null, "граммофон1", "крутой патефон",true);
 
-        List <ItemDto> sourceItems = List.of(
+        List<ItemDto> sourceItems = List.of(
                 itemDto1,
                 itemDto1);
 
@@ -102,7 +102,7 @@ class ItemServiceImplTest {
         ItemDto itemDto2 = makeItemDto(null, "граммофон3", "крутой патефон",true);
         ItemDto itemDto3 = makeItemDto(null, "тест", "тест",true);
 
-        List <ItemDto> sourceItems = List.of(
+        List<ItemDto> sourceItems = List.of(
                 itemDto1,
                 itemDto1);
 
