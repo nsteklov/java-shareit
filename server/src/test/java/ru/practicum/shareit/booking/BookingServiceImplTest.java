@@ -120,6 +120,36 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void findById() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya", "vasya@mail.ru");
+        UserDto userDto2 = makeUserDto(null, "petya", "petya@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User user2 = UserMapper.toUser(userDto2);
+
+        User savedUser1 = userRepository.save(user1);
+        User savedUser2 = userRepository.save(user2);
+
+        ItemDto itemDto1 = makeItemDto(null, "патефон", "крутой патефон",true);
+        Item item1 = ItemMapper.toItem(itemDto1, savedUser1);
+
+        Item savedItem1 = itemRepository.save(item1);
+
+        SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), savedItem1.getId());
+
+        BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
+
+        TypedQuery<Booking> query = em.createQuery("Select b from Booking b where b.id = :id", Booking.class);
+        Booking booking = query.setParameter("id", bookingDto.getId())
+                .getSingleResult();
+
+        assertThat(booking.getId(), notNullValue());
+        assertThat(booking.getStart(), equalTo(saveBookingRequest1.getStart()));
+        assertThat(booking.getEnd(), equalTo(saveBookingRequest1.getEnd()));
+        assertThat(booking.getItem().getId(), equalTo(saveBookingRequest1.getItemId()));
+    }
+
+    @Test
     void findByOwnerId() {
 
         UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");

@@ -77,6 +77,26 @@ class UserServiceImplTest {
     }
 
     @Test
+    void updateUser() {
+        // given
+        UserDto userDto = makeUserDto("vasya@email.com", "Вася");
+
+        // when
+        UserDto createdUserDto = service.create(userDto);
+        createdUserDto.setEmail("1vasya@email.com");
+        service.update(createdUserDto, createdUserDto.getId());
+
+        // then
+        TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
+        User user = query.setParameter("email", "1vasya@email.com")
+                .getSingleResult();
+
+        assertThat(user.getId(), notNullValue());
+        assertThat(user.getName(), equalTo(userDto.getName()));
+        assertThat(user.getEmail(), equalTo("1vasya@email.com"));
+    }
+
+    @Test
     void getById() {
 
         // given

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
@@ -22,6 +24,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDateTime;
 
 @WebMvcTest(controllers = ItemController.class)
 class ItemControllerTestWithContext {
@@ -57,6 +61,55 @@ class ItemControllerTestWithContext {
                 .andExpect(jsonPath("$.description", is(itemDto.getDescription())))
                 .andExpect(jsonPath("$.available", is(itemDto.getAvailable())));
     }
+
+    @Test
+    void addComment() throws Exception {
+        Long userId = 4L;
+        Long itemId = 2L;
+        Long commentId = 3L;
+
+        CommentDto commentDto = makeCommentDto(commentId, userId, "комментарий 1","Вася", LocalDateTime.of(2026, 12, 31, 13, 45, 10));
+
+        when(itemService.addComment(any(), eq(itemId), eq(userId)))
+                .thenReturn(commentDto);
+
+        mvc.perform(post("/items/2/comment")
+                        .header("X-Sharer-User-Id", userId)
+                        .content(mapper.writeValueAsString(commentDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(commentId), Long.class))
+                .andExpect(jsonPath("$.text", is(commentDto.getText())))
+                .andExpect(jsonPath("$.authorId", is(4)))
+                .andExpect(jsonPath("$.authorName", is(commentDto.getAuthorName())))
+                .andExpect(jsonPath("$.created", is(commentDto.getCreated().toString())));
+    }
+
+    @Test
+    void updateItem() throws Exception {
+        Long userId = 1L;
+        Long itemId = 2L;
+
+        ItemDto itemDto = makeItemDto(itemId, "патефон", "крутой патефон",true);
+
+        when(itemService.update(any(), eq(itemId), eq(userId)))
+                .thenReturn(itemDto);
+
+        mvc.perform(patch("/items/2")
+                        .header("X-Sharer-User-Id", userId)
+                        .content(mapper.writeValueAsString(itemDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(itemId), Long.class))
+                .andExpect(jsonPath("$.name", is(itemDto.getName())))
+                .andExpect(jsonPath("$.description", is(itemDto.getDescription())))
+                .andExpect(jsonPath("$.available", is(itemDto.getAvailable())));
+    }
+
 
     @Test
     void getById() throws Exception {
@@ -163,6 +216,17 @@ class ItemControllerTestWithContext {
         dto.setName(name);
         dto.setDescription(description);
         dto.setAvailable(available);
+
+        return dto;
+    }
+
+    private CommentDto makeCommentDto(Long id, Long authorId, String text, String authorName, LocalDateTime created) {
+        CommentDto dto = new CommentDto();
+        dto.setId(id);
+        dto.setText(text);
+        dto.setAuthorId(authorId);
+        dto.setAuthorName(authorName);
+        dto.setCreated(created);
 
         return dto;
     }
