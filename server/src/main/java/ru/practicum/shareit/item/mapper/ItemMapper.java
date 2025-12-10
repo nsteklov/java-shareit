@@ -47,7 +47,6 @@ public class ItemMapper {
     }
 
     public static Item toItem(ItemDto itemDto, User owner) {
-        System.out.println("sd");
         Item item = new Item();
         item.setId(itemDto.getId());
         item.setName(itemDto.getName());
