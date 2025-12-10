@@ -1,8 +1,6 @@
 package ru.practicum.shareit;
 
-
 import org.junit.jupiter.api.Test;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.practicum.shareit.error.ErrorHandler;
 import ru.practicum.shareit.error.ErrorResponse;
 import ru.practicum.shareit.exception.DuplicatedDataException;
