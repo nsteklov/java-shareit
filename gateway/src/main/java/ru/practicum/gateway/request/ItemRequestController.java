@@ -14,7 +14,7 @@ public class ItemRequestController {
     private final ItemRequestClient itemRequestclient;
 
     @PostMapping
-    public ResponseEntity<Object> create (@RequestBody SaveItemRequest saveItemRequest, @RequestHeader(HttpHeaders.X_SHARER_USER_ID) Long userId) {
+    public ResponseEntity<Object> create(@RequestBody SaveItemRequest saveItemRequest, @RequestHeader(HttpHeaders.X_SHARER_USER_ID) Long userId) {
         if (saveItemRequest.getDescription() == null || saveItemRequest.getDescription().isBlank()) {
             throw new ValidationException("Описание запроса не должно быть пустым");
         }

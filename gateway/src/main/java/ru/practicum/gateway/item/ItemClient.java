@@ -12,7 +12,6 @@ import ru.practicum.gateway.client.BaseClient;
 import ru.practicum.gateway.item.dto.CommentDto;
 import ru.practicum.gateway.item.dto.ItemDto;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Service

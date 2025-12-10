@@ -42,7 +42,7 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> findById(Long bookingId, Long userId) {
-        return get( host + API_PREFIX + "/" + bookingId, userId);
+        return get(host + API_PREFIX + "/" + bookingId, userId);
     }
 
     public ResponseEntity<Object> findByUserId(Long userId, String state) {
