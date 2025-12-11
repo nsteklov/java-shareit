@@ -11,6 +11,7 @@ import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.SaveBookingRequest;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -168,7 +169,70 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItem() {
+    void addCommentUserNotFound() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya6", "vasya6@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1 = userRepository.save(user1);
+
+        UserDto userDto2 = makeUserDto(null, "vasya7", "vasya7@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2 = userRepository.save(user2);
+
+        ItemDto itemDto = makeItemDto(null, "патефон11", "крутой патефон",true);
+        ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+        SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2023, 12, 31, 13, 45, 10), LocalDateTime.of(2024, 12, 31, 13, 45, 10), createdItemDto.getId());
+        BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
+        bookingService.approve(bookingDto.getId(), true, savedUser1.getId());
+
+        CommentDto commentDto = makeCommentDto(null, savedUser2.getId(), "комментарий 1","vasya7", null);
+        assertThrows(NotFoundException.class, () -> itemService.addComment(commentDto, createdItemDto.getId(), 137L));
+    }
+
+    @Test
+    void addCommentItemNotFound() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya6", "vasya6@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1 = userRepository.save(user1);
+
+        UserDto userDto2 = makeUserDto(null, "vasya7", "vasya7@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2 = userRepository.save(user2);
+
+        ItemDto itemDto = makeItemDto(null, "патефон11", "крутой патефон",true);
+        ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+        SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2023, 12, 31, 13, 45, 10), LocalDateTime.of(2024, 12, 31, 13, 45, 10), createdItemDto.getId());
+        BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
+        bookingService.approve(bookingDto.getId(), true, savedUser1.getId());
+
+        CommentDto commentDto = makeCommentDto(null, savedUser2.getId(), "комментарий 1","vasya7", null);
+        assertThrows(NotFoundException.class, () -> itemService.addComment(commentDto, 144L,  savedUser2.getId()));
+    }
+
+    @Test
+    void addCommentWithoutBooking() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya6", "vasya6@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1 = userRepository.save(user1);
+
+        UserDto userDto2 = makeUserDto(null, "vasya7", "vasya7@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2 = userRepository.save(user2);
+
+        ItemDto itemDto = makeItemDto(null, "патефон11", "крутой патефон",true);
+        ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+        SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2023, 12, 31, 13, 45, 10), LocalDateTime.of(2024, 12, 31, 13, 45, 10), createdItemDto.getId());
+        BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
+        bookingService.approve(bookingDto.getId(), true, savedUser1.getId());
+
+        CommentDto commentDto = makeCommentDto(null, savedUser2.getId(), "комментарий 1","vasya7", null);
+        assertThrows(ValidationException.class, () -> itemService.addComment(commentDto, createdItemDto.getId(),  savedUser1.getId()));
+    }
+
+    @Test
+    void updateItemName() {
 
         UserDto userDto1 = makeUserDto(null, "vasya2", "vasya2@mail.ru");
         User user1 = UserMapper.toUser(userDto1);
@@ -189,6 +253,100 @@ class ItemServiceImplTest {
         assertThat(item.getName(), equalTo("патефон11"));
         assertThat(item.getDescription(), equalTo(itemDto.getDescription()));
         assertThat(item.isAvailable(), equalTo(itemDto.getAvailable()));
+    }
+
+    @Test
+    void updateItemDescription() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya3522", "vasya222@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1 = userRepository.save(user1);
+
+        ItemDto itemDto = makeItemDto(null, "патефон25442", "крутой патефон",true);
+
+        ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+
+        ItemDto itemDtoForUpdate = makeItemDto(createdItemDto.getId(), null, "очень крутой патефон",null);
+        itemService.update(itemDtoForUpdate, createdItemDto.getId(), user1.getId());
+
+        TypedQuery<Item> query = em.createQuery("Select i from Item i where i.id = :id", Item.class);
+        Item item = query.setParameter("id", createdItemDto.getId())
+                .getSingleResult();
+
+        assertThat(item.getId(), notNullValue());
+        assertThat(item.getName(), equalTo("патефон25442"));
+        assertThat(item.getDescription(), equalTo("очень крутой патефон"));
+        assertThat(item.isAvailable(), equalTo(itemDto.getAvailable()));
+    }
+
+    @Test
+    void updateItemAvailable() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya3122", "vasya222@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1 = userRepository.save(user1);
+
+        ItemDto itemDto = makeItemDto(null, "патефон2142", "крутой патефон",true);
+
+        ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+
+        ItemDto itemDtoForUpdate = makeItemDto(createdItemDto.getId(), null, null,false);
+        itemService.update(itemDtoForUpdate, createdItemDto.getId(), user1.getId());
+
+        TypedQuery<Item> query = em.createQuery("Select i from Item i where i.id = :id", Item.class);
+        Item item = query.setParameter("id", createdItemDto.getId())
+                .getSingleResult();
+
+        assertThat(item.getId(), notNullValue());
+        assertThat(item.getName(), equalTo("патефон2142"));
+        assertThat(item.getDescription(), equalTo("крутой патефон"));
+        assertThat(item.isAvailable(), equalTo(false));
+    }
+
+    @Test
+    void updateItemNotFoundItem() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya322", "vasya222@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1 = userRepository.save(user1);
+
+        ItemDto itemDto = makeItemDto(null, "патефон2442", "крутой патефон",true);
+
+        ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+        assertThrows(NotFoundException.class, () -> itemService.update(createdItemDto, 110L, user1.getId()));
+
+    }
+
+    @Test
+    void updateItemNotFoundUser() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya3222", "vasya2422@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1 = userRepository.save(user1);
+
+        ItemDto itemDto = makeItemDto(null, "патефон2142", "крутой патефон",true);
+
+        ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+        assertThrows(NotFoundException.class, () -> itemService.update(createdItemDto, createdItemDto.getId(), 133L));
+
+    }
+
+    @Test
+    void updateIncorrectUser() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya3422", "vasya2212@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1 = userRepository.save(user1);
+
+        UserDto userDto2 = makeUserDto(null, "vasya4222", "vasya2422@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2 = userRepository.save(user2);
+
+        ItemDto itemDto = makeItemDto(null, "патефон242", "крутой патефон",true);
+
+        ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+        assertThrows(ValidationException.class, () -> itemService.update(createdItemDto, createdItemDto.getId(), savedUser2.getId()));
+
     }
 
     @Test
