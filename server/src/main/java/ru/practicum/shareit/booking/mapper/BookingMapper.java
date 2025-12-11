@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.mapper;
 
 import lombok.AccessLevel;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.SaveBookingRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookingMapper {
 
+    @Generated
     public static BookingDto toBookingDto(Booking booking) {
         return new BookingDto(
                 booking.getId(),

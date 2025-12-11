@@ -25,7 +25,6 @@ public class ItemRequestMapper {
         );
     }
 
-    @Generated
     public static ItemRequest toRequest(SaveItemRequest saveItemRequest, User requestor) {
         ItemRequest itemRequest = new ItemRequest();
         itemRequest.setDescription(saveItemRequest.getDescription());
