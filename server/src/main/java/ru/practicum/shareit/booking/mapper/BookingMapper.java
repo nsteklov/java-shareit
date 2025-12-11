@@ -14,7 +14,6 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookingMapper {
 
-    @Generated
     public static BookingDto toBookingDto(Booking booking) {
         return new BookingDto(
                 booking.getId(),

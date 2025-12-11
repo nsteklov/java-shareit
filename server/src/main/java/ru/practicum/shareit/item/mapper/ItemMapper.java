@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Generated
 public class ItemMapper {
 
     public static ItemDto toItemDto(Item item, LocalDateTime lastBooking,  LocalDateTime nextBooking, List<CommentDto> comments) {

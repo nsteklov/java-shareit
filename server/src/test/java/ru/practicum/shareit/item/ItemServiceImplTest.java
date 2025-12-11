@@ -103,12 +103,24 @@ class ItemServiceImplTest {
     @Test
     void foundItem() {
 
-        UserDto userDto1 = makeUserDto(null, "vasya2", "vasya2@mail.ru");
+        UserDto userDto1 = makeUserDto(null, "vasya211", "vasya112@mail.ru");
         User user1 = UserMapper.toUser(userDto1);
         User savedUser1 = userRepository.save(user1);
 
+        UserDto userDto2 = makeUserDto(null, "vasya442", "vasya442@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2 = userRepository.save(user2);
+
         ItemDto itemDto = makeItemDto(null, "патефон2", "крутой патефон",true);
         ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+
+        SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2023, 12, 31, 13, 45, 10), LocalDateTime.of(2024, 12, 31, 13, 45, 10), createdItemDto.getId());
+        BookingDto bookingDto1 = bookingService.create(saveBookingRequest1, savedUser2.getId());
+        bookingService.approve(bookingDto1.getId(), true, savedUser1.getId());
+
+        SaveBookingRequest saveBookingRequest2 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), createdItemDto.getId());
+        BookingDto bookingDto2 = bookingService.create(saveBookingRequest2, savedUser2.getId());
+        bookingService.approve(bookingDto2.getId(), true, savedUser1.getId());
 
         ItemDto foundItemDto = itemService.findById(createdItemDto.getId());
         assertThat(foundItemDto.getId(), notNullValue());
