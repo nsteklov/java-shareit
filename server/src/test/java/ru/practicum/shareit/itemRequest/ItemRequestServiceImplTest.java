@@ -150,20 +150,37 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
-    void findByIdAnOwnerIdNotFound() {
+    void findByIdAnOwnerIdUserNotFound() {
 
-        UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");
+        UserDto userDto1 = makeUserDto(null, "vasya41", "vasy144a@mail.ru");
         User user1 = UserMapper.toUser(userDto1);
         User savedUser1  = userRepository.save(user1);
-        UserDto userDto2 = makeUserDto(null, "vasya2", "vasy2@mail.ru");
+        UserDto userDto2 = makeUserDto(null, "vasya242", "vasy212@mail.ru");
         User user2 = UserMapper.toUser(userDto2);
         User savedUser2  = userRepository.save(user2);
 
         SaveItemRequest itemRequestDto = makeItemRequestDto("запрос 1");
         ItemRequestDto createdItemRequestDto = service.create(itemRequestDto, savedUser1.getId());
 
-        assertThrows(NotFoundException.class, () -> service.findByIdAndOwnerId(11L, 122L));
+        assertThrows(NotFoundException.class, () -> service.findByIdAndOwnerId(createdItemRequestDto.getId(), 122L));
     }
+
+    @Test
+    void findByIdAnOwnerIdNotFound() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya21", "vasy31a@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1  = userRepository.save(user1);
+        UserDto userDto2 = makeUserDto(null, "vasya32", "vasy32@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2  = userRepository.save(user2);
+
+        SaveItemRequest itemRequestDto = makeItemRequestDto("запрос 1");
+        ItemRequestDto createdItemRequestDto = service.create(itemRequestDto, savedUser1.getId());
+
+        assertThrows(NotFoundException.class, () -> service.findByIdAndOwnerId(134L, savedUser1.getId()));
+    }
+
 
     @Test
     void findAll() {

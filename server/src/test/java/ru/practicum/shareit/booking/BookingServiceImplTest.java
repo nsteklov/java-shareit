@@ -187,6 +187,30 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void findByIdIncorrectUser() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya11", "vasya11@mail.ru");
+        UserDto userDto2 = makeUserDto(null, "petya11", "petya11@mail.ru");
+        UserDto userDto3 = makeUserDto(null, "petya111", "petya111@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User user2 = UserMapper.toUser(userDto2);
+        User user3 = UserMapper.toUser(userDto3);
+
+        User savedUser1 = userRepository.save(user1);
+        User savedUser2 = userRepository.save(user2);
+        User savedUser3 = userRepository.save(user3);
+
+        ItemDto itemDto1 = makeItemDto(null, "патефон", "крутой патефон",true);
+        Item item1 = ItemMapper.toItem(itemDto1, savedUser1);
+        Item savedItem1 = itemRepository.save(item1);
+
+        SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), savedItem1.getId());
+        BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
+
+        assertThrows(ValidationException.class, () -> bookingService.findById(bookingDto.getId(), savedUser3.getId()));
+    }
+
+    @Test
     void findByOwnerId() {
 
         UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");

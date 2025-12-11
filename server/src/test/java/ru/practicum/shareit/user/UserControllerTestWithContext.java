@@ -118,6 +118,12 @@ class UserControllerTestWithContext {
     void deleteUser() throws Exception {
         UserDto userDto = makeUserDto(1L, "Вася", "vasya@email.com");
         userService.deleteUser(1L);
+        mvc.perform(delete("/users/1")
+                        .content(mapper.writeValueAsString(userDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     private UserDto makeUserDto(Long id, String name, String email) {
