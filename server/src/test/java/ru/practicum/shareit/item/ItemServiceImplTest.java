@@ -81,6 +81,41 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void findByOwnerIdAdditional() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1  = userRepository.save(user1);
+
+        ItemDto itemDto1 = makeItemDto(null, "патефон1", "крутой патефон",true);
+        ItemDto itemDto2 = makeItemDto(null, "граммофон1", "крутой патефон",true);
+
+        List<ItemDto> sourceItems = List.of(
+                itemDto1,
+                itemDto1);
+
+        Item entity1 = ItemMapper.toItem(itemDto1, savedUser1);
+        em.persist(entity1);
+
+        Item entity2 = ItemMapper.toItem(itemDto2, savedUser1);
+        em.persist(entity2);
+
+        em.flush();
+
+        Collection<ItemDto> targetItems = itemService.findByOwnerId(savedUser1.getId());
+
+        assertThat(targetItems, hasSize(sourceItems.size()));
+        for (ItemDto itemDto : sourceItems) {
+            assertThat(targetItems, hasItem(allOf(
+                    hasProperty("id", notNullValue()),
+                    hasProperty("name", equalTo(itemDto.getName())),
+                    hasProperty("description", equalTo(itemDto.getDescription())),
+                    hasProperty("available", equalTo(itemDto.getAvailable()))
+            )));
+        }
+    }
+
+    @Test
     void saveItem() {
 
         UserDto userDto1 = makeUserDto(null, "vasya2", "vasya2@mail.ru");
