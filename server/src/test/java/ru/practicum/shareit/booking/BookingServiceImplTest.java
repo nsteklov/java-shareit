@@ -112,6 +112,9 @@ class BookingServiceImplTest {
         targetBookings = service.findByUserId(savedUser2.getId(), "REJECTED");
         assertThat(targetBookings, hasSize(0));
 
+        targetBookings = service.findByUserId(savedUser2.getId(), "");
+        assertThat(targetBookings, hasSize(0));
+
     }
 
     @Test
@@ -275,6 +278,9 @@ class BookingServiceImplTest {
         assertThat(targetBookings, hasSize(0));
 
         targetBookings = service.findByOwnerId(savedUser1.getId(), "REJECTED");
+        assertThat(targetBookings, hasSize(0));
+
+        targetBookings = service.findByOwnerId(savedUser1.getId(), "");
         assertThat(targetBookings, hasSize(0));
     }
 
