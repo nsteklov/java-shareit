@@ -186,6 +186,17 @@ class UserServiceImplTest {
         assertFalse(repository.existsById(id));
     }
 
+    @Test
+    void deleteUserNotFound() {
+
+        UserDto userDto = makeUserDto("vasya@email.com", "Вася");
+
+        UserDto createdUserDto = service.create(userDto);
+        Long id = createdUserDto.getId();
+        assertThrows(NotFoundException.class, () -> service.deleteUser(123L));
+
+    }
+
     private UserDto makeUserDto(String email, String name) {
         UserDto dto = new UserDto();
         dto.setName(name);

@@ -153,6 +153,27 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void saveBookingFotNotAvailableItem() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya", "vasya@mail.ru");
+        UserDto userDto2 = makeUserDto(null, "petya", "petya@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User user2 = UserMapper.toUser(userDto2);
+
+        User savedUser1 = userRepository.save(user1);
+        User savedUser2 = userRepository.save(user2);
+
+        ItemDto itemDto1 = makeItemDto(null, "патефон", "крутой патефон",false);
+        Item item1 = ItemMapper.toItem(itemDto1, savedUser1);
+
+        Item savedItem1 = itemRepository.save(item1);
+
+        SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), savedItem1.getId());
+
+        assertThrows(ValidationException.class, () -> bookingService.create(saveBookingRequest1, savedUser2.getId()));
+    }
+
+    @Test
     void approveByNotOwner() {
 
         UserDto userDto1 = makeUserDto(null, "vasya32", "vasya32@mail.ru");
@@ -171,6 +192,29 @@ class BookingServiceImplTest {
         SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), savedItem1.getId());
         BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
         assertThrows(ValidationException.class, () -> bookingService.approve(bookingDto.getId(), true, savedUser2.getId()));
+    }
+
+    @Test
+    void reject() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya132", "vasya32@mail.ru");
+        UserDto userDto2 = makeUserDto(null, "petya444", "petya44@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User user2 = UserMapper.toUser(userDto2);
+
+        User savedUser1 = userRepository.save(user1);
+        User savedUser2 = userRepository.save(user2);
+
+        ItemDto itemDto1 = makeItemDto(null, "патефон11", "крутой патефон",true);
+        Item item1 = ItemMapper.toItem(itemDto1, savedUser1);
+
+        Item savedItem1 = itemRepository.save(item1);
+
+        SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), savedItem1.getId());
+        BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
+        BookingDto bookingDtoRejected =  bookingService.approve(bookingDto.getId(), false, savedUser1.getId());
+
+        assertThat(bookingDtoRejected.getStatus(), equalTo(Status.REJECTED));
     }
 
     @Test
@@ -216,6 +260,33 @@ class BookingServiceImplTest {
         BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
 
         assertThrows(ValidationException.class, () -> bookingService.findById(bookingDto.getId(), savedUser3.getId()));
+    }
+
+    @Test
+    void findById() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya11", "vasya11@mail.ru");
+        UserDto userDto2 = makeUserDto(null, "petya11", "petya11@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User user2 = UserMapper.toUser(userDto2);
+
+        User savedUser1 = userRepository.save(user1);
+        User savedUser2 = userRepository.save(user2);
+
+        ItemDto itemDto1 = makeItemDto(null, "патефон", "крутой патефон",true);
+        Item item1 = ItemMapper.toItem(itemDto1, savedUser1);
+        Item savedItem1 = itemRepository.save(item1);
+
+        SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), savedItem1.getId());
+        BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
+
+        BookingDto foundBookingDto  = bookingService.findById(bookingDto.getId(), savedUser2.getId());
+
+        assertThat(foundBookingDto.getId(), notNullValue());
+        assertThat(foundBookingDto.getStart(), equalTo(saveBookingRequest1.getStart()));
+        assertThat(foundBookingDto.getEnd(), equalTo(saveBookingRequest1.getEnd()));
+        assertThat(foundBookingDto.getItem().getId(), equalTo(saveBookingRequest1.getItemId()));
+
     }
 
     @Test

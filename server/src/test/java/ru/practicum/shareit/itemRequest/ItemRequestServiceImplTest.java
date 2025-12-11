@@ -153,6 +153,29 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
+    void findByIdAndOwnerIdNotFound() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1  = userRepository.save(user1);
+        UserDto userDto2 = makeUserDto(null, "vasya2", "vasy2@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2  = userRepository.save(user2);
+
+        SaveItemRequest itemRequestDto = makeItemRequestDto("запрос 1");
+        ItemRequestDto createdItemRequestDto = service.create(itemRequestDto, savedUser1.getId());
+
+        ItemDto itemDto = makeItemDto(null, "патефон1", "крутой патефон",true, createdItemRequestDto.getId());
+        Item item = ItemMapper.toItem(itemDto, savedUser2);
+        Item savedItem = itemRepository.save(item);
+        ItemDto itemDtoFull = ItemMapper.toItemDto(savedItem, LocalDateTime.of(2023, 12, 31, 13, 45, 10), LocalDateTime.of(2026, 12, 31, 13, 45, 10), new ArrayList<>());
+
+        ItemRequestDto foundItemRequestDto = service.findByIdAndOwnerId(createdItemRequestDto.getId(), savedUser1.getId());
+
+        assertThat(foundItemRequestDto, equalTo(null));
+    }
+
+    @Test
     void findByIdAnOwnerIdUserNotFound() {
 
         UserDto userDto1 = makeUserDto(null, "vasya41", "vasy144a@mail.ru");
