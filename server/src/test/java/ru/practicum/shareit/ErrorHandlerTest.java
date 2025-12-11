@@ -29,4 +29,11 @@ public class ErrorHandlerTest {
         ErrorHandler errorHandler = new ErrorHandler();
         ErrorResponse errorResponse = errorHandler.handleNotValid(validationException);
     }
+
+    @Test
+    public void handleThrowable() {
+        Throwable throwable = new Throwable("Исключение");
+        ErrorHandler errorHandler = new ErrorHandler();
+        ErrorResponse errorResponse = errorHandler.handleThrowable(throwable);
+    }
 }

@@ -173,6 +173,16 @@
 					</excludes>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/ShareItApp.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -184,9 +194,6 @@
                     <configuration>
                         <excludes>
                             <exclude>**/ShareItApp.class</exclude>
-                        </excludes>
-                        <excludes>
-                            <exclude>**/HttpHeaders.class</exclude>
                         </excludes>
                     </configuration>
                 </plugin>

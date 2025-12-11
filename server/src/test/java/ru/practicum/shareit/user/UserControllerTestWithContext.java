@@ -116,7 +116,8 @@ class UserControllerTestWithContext {
 
     @Test
     void deleteUser() throws Exception {
-
+        UserDto userDto = makeUserDto(1L, "Вася", "vasya@email.com");
+        userService.deleteUser(1L);
     }
 
     private UserDto makeUserDto(Long id, String name, String email) {
