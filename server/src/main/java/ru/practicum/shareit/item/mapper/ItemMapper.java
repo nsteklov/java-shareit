@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.mapper;
 
 import lombok.AccessLevel;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
