@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -28,6 +29,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 @SpringBootTest(
@@ -123,6 +125,44 @@ class ItemRequestServiceImplTest {
                 .getSingleResult();
 
         assertThat(itemRequest.getDescription(), equalTo(createdItemRequestDto.getDescription()));
+    }
+
+    @Test
+    void findByIdAndOwnerIdAnother() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1  = userRepository.save(user1);
+        UserDto userDto2 = makeUserDto(null, "vasya2", "vasy2@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2  = userRepository.save(user2);
+
+        SaveItemRequest itemRequestDto = makeItemRequestDto("запрос 1");
+        ItemRequestDto createdItemRequestDto = service.create(itemRequestDto, savedUser1.getId());
+
+        ItemDto itemDto = makeItemDto(null, "патефон1", "крутой патефон",true, createdItemRequestDto.getId());
+        Item item = ItemMapper.toItem(itemDto, savedUser2);
+        Item savedItem = itemRepository.save(item);
+
+        ItemRequestDto foundItemRequestDto = service.findByIdAndOwnerId(createdItemRequestDto.getId(), savedUser2.getId());
+
+        assertThat(foundItemRequestDto.getDescription(), equalTo(createdItemRequestDto.getDescription()));
+    }
+
+    @Test
+    void findByIdAnOwnerIdNotFound() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya1", "vasy1a@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1  = userRepository.save(user1);
+        UserDto userDto2 = makeUserDto(null, "vasya2", "vasy2@mail.ru");
+        User user2 = UserMapper.toUser(userDto2);
+        User savedUser2  = userRepository.save(user2);
+
+        SaveItemRequest itemRequestDto = makeItemRequestDto("запрос 1");
+        ItemRequestDto createdItemRequestDto = service.create(itemRequestDto, savedUser1.getId());
+
+        assertThrows(NotFoundException.class, () -> service.findByIdAndOwnerId(11L, 122L));
     }
 
     @Test

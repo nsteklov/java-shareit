@@ -100,6 +100,36 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void foundItem() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya2", "vasya2@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1 = userRepository.save(user1);
+
+        ItemDto itemDto = makeItemDto(null, "патефон2", "крутой патефон",true);
+        ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+
+        ItemDto foundItemDto = itemService.findById(createdItemDto.getId());
+        assertThat(foundItemDto.getId(), notNullValue());
+        assertThat(foundItemDto.getName(), equalTo(itemDto.getName()));
+        assertThat(foundItemDto.getDescription(), equalTo(itemDto.getDescription()));
+        assertThat(foundItemDto.getAvailable(), equalTo(itemDto.getAvailable()));
+    }
+
+    @Test
+    void notFoundItem() {
+
+        UserDto userDto1 = makeUserDto(null, "vasya2", "vasya2@mail.ru");
+        User user1 = UserMapper.toUser(userDto1);
+        User savedUser1 = userRepository.save(user1);
+
+        ItemDto itemDto = makeItemDto(null, "патефон2", "крутой патефон",true);
+        ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
+
+        assertThrows(NotFoundException.class, () -> itemService.findById(100L));
+    }
+
+    @Test
     void saveItemWithIncorrectUser() {
 
         ItemDto itemDto = makeItemDto(null, "патефон2", "крутой патефон",true);

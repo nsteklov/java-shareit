@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DuplicatedDataException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
@@ -123,6 +124,18 @@ class UserServiceImplTest {
         assertThat(user.getId(), equalTo(createdUserDto.getId()));
         assertThat(user.getName(), equalTo(userDto.getName()));
         assertThat(user.getEmail(), equalTo(userDto.getEmail()));
+    }
+
+    @Test
+    void getByIdNotFound() {
+
+        // given
+        UserDto userDto = makeUserDto("vasya1@email.com", "Вася1");
+
+        // when
+        UserDto createdUserDto = service.create(userDto);
+
+        assertThrows(NotFoundException.class, () -> service.getUser(123L));
     }
 
     @Test
