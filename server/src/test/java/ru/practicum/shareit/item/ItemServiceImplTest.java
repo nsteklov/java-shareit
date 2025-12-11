@@ -178,15 +178,15 @@ class ItemServiceImplTest {
 
         ItemDto createdItemDto = itemService.create(itemDto, savedUser1.getId());
 
-        createdItemDto.setName("патефон3");
-        itemService.update(createdItemDto, createdItemDto.getId(), user1.getId());
+        ItemDto itemDtoForUpdate = makeItemDto(createdItemDto.getId(), "патефон11", null,true);
+        itemService.update(itemDtoForUpdate, createdItemDto.getId(), user1.getId());
 
         TypedQuery<Item> query = em.createQuery("Select i from Item i where i.name = :name", Item.class);
-        Item item = query.setParameter("name", "патефон3")
+        Item item = query.setParameter("name", "патефон11")
                 .getSingleResult();
 
         assertThat(item.getId(), notNullValue());
-        assertThat(item.getName(), equalTo("патефон3"));
+        assertThat(item.getName(), equalTo("патефон11"));
         assertThat(item.getDescription(), equalTo(itemDto.getDescription()));
         assertThat(item.isAvailable(), equalTo(itemDto.getAvailable()));
     }

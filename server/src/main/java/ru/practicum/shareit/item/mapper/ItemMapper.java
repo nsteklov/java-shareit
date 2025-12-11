@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.mapper;
 
 import lombok.AccessLevel;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Generated
 public class ItemMapper {
 
     public static ItemDto toItemDto(Item item, LocalDateTime lastBooking,  LocalDateTime nextBooking, List<CommentDto> comments) {

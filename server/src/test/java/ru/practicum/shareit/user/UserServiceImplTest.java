@@ -88,23 +88,57 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUser() {
+    void updateUserName() {
         // given
         UserDto userDto = makeUserDto("vasya@email.com", "Вася");
 
         // when
         UserDto createdUserDto = service.create(userDto);
-        createdUserDto.setEmail("1vasya@email.com");
-        service.update(createdUserDto, createdUserDto.getId());
+
+        UserDto userDtoForUpdate = makeUserDto(null, "Вася123");
+        service.update(userDtoForUpdate, createdUserDto.getId());
 
         // then
-        TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
-        User user = query.setParameter("email", "1vasya@email.com")
+        TypedQuery<User> query = em.createQuery("Select u from User u where u.name = :name", User.class);
+        User user = query.setParameter("name", "Вася123")
                 .getSingleResult();
 
         assertThat(user.getId(), notNullValue());
-        assertThat(user.getName(), equalTo(userDto.getName()));
-        assertThat(user.getEmail(), equalTo("1vasya@email.com"));
+        assertThat(user.getName(), equalTo("Вася123"));
+        assertThat(user.getEmail(), equalTo("vasya@email.com"));
+    }
+
+    @Test
+    void updateUserEmail() {
+        // given
+        UserDto userDto = makeUserDto("vasya@email.com", "Вася76");
+
+        // when
+        UserDto createdUserDto = service.create(userDto);
+
+        UserDto userDtoForUpdate = makeUserDto("vasya444@email.com", null);
+        service.update(userDtoForUpdate, createdUserDto.getId());
+
+        // then
+        TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
+        User user = query.setParameter("email", "vasya444@email.com")
+                .getSingleResult();
+
+        assertThat(user.getId(), notNullValue());
+        assertThat(user.getName(), equalTo("Вася76"));
+        assertThat(user.getEmail(), equalTo("vasya444@email.com"));
+    }
+
+    @Test
+    void updateUserNotFound() {
+        // given
+        UserDto userDto = makeUserDto("vasya@email.com", "Вася76");
+
+        // when
+        UserDto createdUserDto = service.create(userDto);
+
+        UserDto userDtoForUpdate = makeUserDto("vasya444@email.com", null);
+        assertThrows(NotFoundException.class, () -> service.update(userDtoForUpdate,100L));
     }
 
     @Test
