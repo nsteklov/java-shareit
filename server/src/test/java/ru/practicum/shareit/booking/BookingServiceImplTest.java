@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.SaveBookingRequest;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -89,6 +90,28 @@ class BookingServiceImplTest {
                     hasProperty("end", equalTo(sourceBooking.getEnd()))
             )));
         }
+        targetBookings = service.findByUserId(savedUser2.getId(), "ALL");
+        assertThat(targetBookings, hasSize(sourceBookings.size()));
+        for (SaveBookingRequest sourceBooking2 : sourceBookings) {
+            assertThat(targetBookings, hasItem(allOf(
+                    hasProperty("id", notNullValue()),
+                    hasProperty("start", equalTo(sourceBooking2.getStart())),
+                    hasProperty("end", equalTo(sourceBooking2.getEnd()))
+            )));
+        }
+
+        targetBookings = service.findByUserId(savedUser2.getId(), "CURRENT");
+        assertThat(targetBookings, hasSize(0));
+
+        targetBookings = service.findByUserId(savedUser2.getId(), "PAST");
+        assertThat(targetBookings, hasSize(0));
+
+        targetBookings = service.findByUserId(savedUser2.getId(), "FUTURE");
+        assertThat(targetBookings, hasSize(0));
+
+        targetBookings = service.findByUserId(savedUser2.getId(), "REJECTED");
+        assertThat(targetBookings, hasSize(0));
+
     }
 
     @Test
@@ -143,7 +166,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findById() {
+    void findByIncorrectId() {
 
         UserDto userDto1 = makeUserDto(null, "vasya", "vasya@mail.ru");
         UserDto userDto2 = makeUserDto(null, "petya", "petya@mail.ru");
@@ -155,21 +178,12 @@ class BookingServiceImplTest {
 
         ItemDto itemDto1 = makeItemDto(null, "патефон", "крутой патефон",true);
         Item item1 = ItemMapper.toItem(itemDto1, savedUser1);
-
         Item savedItem1 = itemRepository.save(item1);
 
         SaveBookingRequest saveBookingRequest1 = makeSaveBookingRequest(LocalDateTime.of(2026, 12, 31, 13, 45, 10), LocalDateTime.of(2028, 12, 31, 13, 45, 10), savedItem1.getId());
-
         BookingDto bookingDto = bookingService.create(saveBookingRequest1, savedUser2.getId());
 
-        TypedQuery<Booking> query = em.createQuery("Select b from Booking b where b.id = :id", Booking.class);
-        Booking booking = query.setParameter("id", bookingDto.getId())
-                .getSingleResult();
-
-        assertThat(booking.getId(), notNullValue());
-        assertThat(booking.getStart(), equalTo(saveBookingRequest1.getStart()));
-        assertThat(booking.getEnd(), equalTo(saveBookingRequest1.getEnd()));
-        assertThat(booking.getItem().getId(), equalTo(saveBookingRequest1.getItemId()));
+        assertThrows(NotFoundException.class, () -> bookingService.findById(11L, savedUser1.getId()));
     }
 
     @Test

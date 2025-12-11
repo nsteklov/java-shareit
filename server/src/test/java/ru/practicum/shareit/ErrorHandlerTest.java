@@ -9,29 +9,24 @@ import ru.practicum.shareit.exception.ValidationException;
 
 public class ErrorHandlerTest {
 
-    public void  printMessage() {
-        ErrorHandler errorHandler = new ErrorHandler();
-        errorHandler.printMessage();
-    }
-
     @Test
     public void handleNotFoundException() {
         NotFoundException notFoundException = new NotFoundException("Исключение");
-        ErrorResponse errorResponse = new ErrorResponse(notFoundException.getMessage());
-        printMessage();
+        ErrorHandler errorHandler = new ErrorHandler();
+        ErrorResponse errorResponse = errorHandler.handleNotFound(notFoundException);
     }
 
     @Test
     public void handleDuplicatedDataException() {
         DuplicatedDataException duplicatedDataException = new DuplicatedDataException("Исключение");
-        ErrorResponse errorResponse = new ErrorResponse(duplicatedDataException.getMessage());
-        printMessage();
+        ErrorHandler errorHandler = new ErrorHandler();
+        ErrorResponse errorResponse = errorHandler.handleDuplicatedDataException(duplicatedDataException);
     }
 
     @Test
     public void handleValidationException() {
         ValidationException validationException = new ValidationException("Исключение");
-        ErrorResponse errorResponse = new ErrorResponse(validationException.getMessage());
-        printMessage();
+        ErrorHandler errorHandler = new ErrorHandler();
+        ErrorResponse errorResponse = errorHandler.handleNotValid(validationException);
     }
 }
