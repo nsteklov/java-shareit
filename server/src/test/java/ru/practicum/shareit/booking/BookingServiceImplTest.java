@@ -231,6 +231,27 @@ class BookingServiceImplTest {
                     hasProperty("end", equalTo(sourceBooking.getEnd()))
             )));
         }
+        targetBookings = service.findByOwnerId(savedUser1.getId(), "ALL");
+        assertThat(targetBookings, hasSize(sourceBookings.size()));
+        for (SaveBookingRequest sourceBooking2 : sourceBookings) {
+            assertThat(targetBookings, hasItem(allOf(
+                    hasProperty("id", notNullValue()),
+                    hasProperty("start", equalTo(sourceBooking2.getStart())),
+                    hasProperty("end", equalTo(sourceBooking2.getEnd()))
+            )));
+        }
+
+        targetBookings = service.findByOwnerId(savedUser1.getId(), "CURRENT");
+        assertThat(targetBookings, hasSize(0));
+
+        targetBookings = service.findByOwnerId(savedUser1.getId(), "PAST");
+        assertThat(targetBookings, hasSize(0));
+
+        targetBookings = service.findByOwnerId(savedUser1.getId(), "FUTURE");
+        assertThat(targetBookings, hasSize(0));
+
+        targetBookings = service.findByOwnerId(savedUser1.getId(), "REJECTED");
+        assertThat(targetBookings, hasSize(0));
     }
 
     private SaveBookingRequest makeSaveBookingRequest(LocalDateTime start, LocalDateTime end, Long itemId) {
