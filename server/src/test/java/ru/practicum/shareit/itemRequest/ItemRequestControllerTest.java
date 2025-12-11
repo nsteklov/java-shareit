@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ItemRequestController.class)
-class ItemRequestControllerTestWithContext {
+class ItemRequestControllerTest {
 
     @Autowired
     ObjectMapper mapper;
@@ -39,7 +39,7 @@ class ItemRequestControllerTestWithContext {
 
 
     @Test
-    void saveNewRequest() throws Exception {
+    void create() throws Exception {
         Long userId = 2L;
         Long itemRequestId = 3L;
 

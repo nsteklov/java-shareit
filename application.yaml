@@ -1,4 +1,0 @@
-#jacoco:
-#  excludes:
-#    - "**/HttpHeaders/**"
-#    - "**/ShareItApp/**"

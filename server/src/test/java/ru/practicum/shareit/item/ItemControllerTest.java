@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDateTime;
 
 @WebMvcTest(controllers = ItemController.class)
-class ItemControllerTestWithContext {
+class ItemControllerTest {
 
     @Autowired
     ObjectMapper mapper;
@@ -39,7 +39,7 @@ class ItemControllerTestWithContext {
     private MockMvc mvc;
 
     @Test
-    void saveNewItem() throws Exception {
+    void create() throws Exception {
         Long userId = 1L;
         Long itemId = 2L;
 
@@ -87,7 +87,7 @@ class ItemControllerTestWithContext {
     }
 
     @Test
-    void updateItem() throws Exception {
+    void update() throws Exception {
         Long userId = 1L;
         Long itemId = 2L;
 

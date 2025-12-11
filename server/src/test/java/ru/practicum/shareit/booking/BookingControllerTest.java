@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = BookingController.class)
-class BookingControllerTestWithContext {
+class BookingControllerTest {
 
     @Autowired
     ObjectMapper mapper;
@@ -38,7 +38,7 @@ class BookingControllerTestWithContext {
 
 
     @Test
-    void saveNewBooking() throws Exception {
+    void create() throws Exception {
         Long bookerId = 2L;
         Long itemId = 3L;
 
@@ -103,7 +103,7 @@ class BookingControllerTestWithContext {
     }
 
     @Test
-    void getById() throws Exception {
+    void findById() throws Exception {
 
         Long bookerId = 2L;
         Long itemId = 3L;
@@ -136,7 +136,7 @@ class BookingControllerTestWithContext {
     }
 
     @Test
-    void getByUserId() throws Exception {
+    void findByUserId() throws Exception {
 
         Long bookerId = 2L;
         Long itemId = 3L;
@@ -186,7 +186,7 @@ class BookingControllerTestWithContext {
     }
 
     @Test
-    void getByOwnerId() throws Exception {
+    void findByOwnerId() throws Exception {
 
         Long bookerId = 2L;
         Long ownerId = 2L;
