@@ -22,6 +22,8 @@ import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -143,6 +145,7 @@ class ItemRequestServiceImplTest {
         ItemDto itemDto = makeItemDto(null, "патефон1", "крутой патефон",true, createdItemRequestDto.getId());
         Item item = ItemMapper.toItem(itemDto, savedUser2);
         Item savedItem = itemRepository.save(item);
+        ItemDto itemDtoFull = ItemMapper.toItemDto(savedItem, LocalDateTime.of(2023, 12, 31, 13, 45, 10), LocalDateTime.of(2026, 12, 31, 13, 45, 10), new ArrayList<>());
 
         ItemRequestDto foundItemRequestDto = service.findByIdAndOwnerId(createdItemRequestDto.getId(), savedUser2.getId());
 

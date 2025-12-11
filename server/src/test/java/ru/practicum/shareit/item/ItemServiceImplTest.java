@@ -23,6 +23,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -123,10 +124,13 @@ class ItemServiceImplTest {
         bookingService.approve(bookingDto2.getId(), true, savedUser1.getId());
 
         ItemDto foundItemDto = itemService.findById(createdItemDto.getId());
-        assertThat(foundItemDto.getId(), notNullValue());
-        assertThat(foundItemDto.getName(), equalTo(itemDto.getName()));
-        assertThat(foundItemDto.getDescription(), equalTo(itemDto.getDescription()));
-        assertThat(foundItemDto.getAvailable(), equalTo(itemDto.getAvailable()));
+        Item item = ItemMapper.toItem(foundItemDto, savedUser1);
+        ItemDto itemDtoFull = ItemMapper.toItemDto(item, LocalDateTime.of(2023, 12, 31, 13, 45, 10), LocalDateTime.of(2026, 12, 31, 13, 45, 10), new ArrayList<>());
+
+        assertThat(itemDtoFull.getId(), notNullValue());
+        assertThat(itemDtoFull.getName(), equalTo(itemDto.getName()));
+        assertThat(itemDtoFull.getDescription(), equalTo(itemDto.getDescription()));
+        assertThat(itemDtoFull.getAvailable(), equalTo(itemDto.getAvailable()));
     }
 
     @Test

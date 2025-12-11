@@ -141,10 +141,15 @@ class BookingServiceImplTest {
         Booking booking = query.setParameter("id", bookingDto.getId())
                 .getSingleResult();
 
+
         assertThat(booking.getId(), notNullValue());
         assertThat(booking.getStart(), equalTo(saveBookingRequest1.getStart()));
         assertThat(booking.getEnd(), equalTo(saveBookingRequest1.getEnd()));
         assertThat(booking.getItem().getId(), equalTo(saveBookingRequest1.getItemId()));
+
+        booking.setItem(null);
+        booking.setBooker(null);
+        BookingDto bookingDto2 = BookingMapper.toBookingDto(booking);
     }
 
     @Test
